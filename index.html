@@ -906,7 +906,7 @@ header {
               <svg viewBox="0 0 16 16"><path d="M1.5 1.5l13 6.5-13 6.5V9.5l9-3-9-3V1.5z"/></svg>
             </button>
           </div>
-          <div class="input-hint">Your genetics AI · Verify coverage with payer before ordering</div>
+          <div class="input-hint">Your genetics AI</div>
         </div>
       </div>
     </div>
@@ -1581,6 +1581,8 @@ function scrollToBottom() {
 }
 
 function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 
 function formatDate(iso) {
   if (!iso) return '';
