@@ -3,1078 +3,1300 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MAST Provider</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<title>Between — Where Care Lives</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --forest:    #1B3A2D;
-  --forest-d:  #142D22;
-  --sage:      #4A7C6F;
-  --sage-l:    #EAF2EF;
-  --bg:        #F7F5F0;
-  --bg-soft:   #EFECE6;
-  --text:      #2C2C2C;
-  --text-soft: #6B7280;
-  --border:    #D8D4CC;
-  --white:     #FFFFFF;
-  --sidebar-w: 260px;
-}
-
-html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; }
-
-/* ══════════════════════════════
-   LOGIN SCREEN
-══════════════════════════════ */
-#loginScreen {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg);
-}
-
-.login-card {
-  width: 100%;
-  max-width: 400px;
-  padding: 48px 40px;
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-}
-
-.login-logo {
-  font-family: 'DM Serif Display', serif;
-  font-size: 26px;
-  color: var(--forest);
-  margin-bottom: 4px;
-}
-
-.login-logo span {
-  font-family: 'Inter', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--sage);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-left: 8px;
-  vertical-align: middle;
-}
-
-.login-sub {
-  font-size: 13px;
-  color: var(--text-soft);
-  margin-bottom: 32px;
-}
-
-.field {
-  margin-bottom: 16px;
-}
-
-.field label {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: 6px;
-  letter-spacing: 0.02em;
-}
-
-.field input {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  color: var(--text);
-  background: var(--bg);
-  outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
-
-.field input:focus {
-  border-color: var(--sage);
-  box-shadow: 0 0 0 3px rgba(74,124,111,0.1);
-  background: var(--white);
-}
-
-.login-btn {
-  width: 100%;
-  padding: 11px;
-  background: var(--forest);
-  color: var(--white);
-  border: none;
-  border-radius: 8px;
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  margin-top: 8px;
-  transition: background 0.15s;
-}
-
-.login-btn:hover { background: var(--sage); }
-.login-btn:disabled { background: var(--border); cursor: not-allowed; }
-
-.login-error {
-  font-size: 13px;
-  color: #C0392B;
-  margin-top: 12px;
-  text-align: center;
-  min-height: 20px;
-}
-
-.login-footer {
-  margin-top: 24px;
-  font-size: 12px;
-  color: var(--text-soft);
-  text-align: center;
-  line-height: 1.6;
-}
-
-/* ══════════════════════════════
-   APP SHELL
-══════════════════════════════ */
-#appShell { display: none; height: 100vh; flex-direction: column; }
-
-/* HEADER */
-header {
-  height: 52px;
-  background: var(--forest);
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  gap: 12px;
-  flex-shrink: 0;
-  z-index: 100;
-}
-
-.wordmark {
-  font-family: 'DM Serif Display', serif;
-  font-size: 19px;
-  color: var(--white);
-}
-
-.wordmark span {
-  font-family: 'Inter', sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  color: #8FC4B7;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-left: 7px;
-  vertical-align: middle;
-}
-
-.header-right {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.user-name {
-  font-size: 12px;
-  color: #8FC4B7;
-  font-weight: 500;
-}
-
-.header-btn {
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 6px;
-  color: rgba(255,255,255,0.8);
-  font-size: 12px;
-  font-weight: 500;
-  padding: 4px 11px;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  transition: background 0.15s;
-}
-
-.header-btn:hover { background: rgba(255,255,255,0.1); }
-
-/* BODY ROW */
-.body-row {
-  display: flex;
-  flex: 1;
-  overflow: hidden;
-}
-
-/* SIDEBAR */
-.sidebar {
-  width: var(--sidebar-w);
-  background: var(--white);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  overflow: hidden;
-}
-
-.sidebar-header {
-  padding: 14px 16px 10px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.sidebar-title {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-soft);
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-}
-
-.new-chat-btn {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--sage);
-  background: var(--sage-l);
-  border: 1px solid var(--sage);
-  border-radius: 6px;
-  padding: 4px 10px;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  transition: background 0.15s;
-}
-
-.new-chat-btn:hover { background: #D4EBE5; }
-
-.sidebar-list {
-  flex: 1;
-  overflow-y: auto;
-  padding: 8px 0;
-}
-
-.sidebar-list::-webkit-scrollbar { width: 3px; }
-.sidebar-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-.conv-item {
-  padding: 9px 16px;
-  cursor: pointer;
-  border-radius: 0;
-  transition: background 0.12s;
-  border-left: 3px solid transparent;
-}
-
-.conv-item:hover { background: var(--bg); }
-
-.conv-item.active {
-  background: var(--sage-l);
-  border-left-color: var(--sage);
-}
-
-.conv-title {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.4;
-}
-
-.conv-date {
-  font-size: 11px;
-  color: var(--text-soft);
-  margin-top: 2px;
-}
-
-.sidebar-empty {
-  padding: 24px 16px;
-  font-size: 13px;
-  color: var(--text-soft);
-  text-align: center;
-  line-height: 1.6;
-}
-
-/* MAIN */
-.main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  position: relative;
-}
-
-/* CONVERSATION */
-.conversation {
-  flex: 1;
-  overflow-y: auto;
-  padding: 28px 0 160px;
-  scroll-behavior: smooth;
-}
-
-.conversation::-webkit-scrollbar { width: 4px; }
-.conversation::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-/* EMPTY STATE */
-.empty-state {
-  max-width: 580px;
-  margin: 48px auto 0;
-  padding: 0 24px;
-  text-align: center;
-}
-
-.empty-icon {
-  width: 44px;
-  height: 44px;
-  background: var(--sage-l);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 18px;
-}
-
-.empty-icon svg { width: 22px; height: 22px; stroke: var(--sage); }
-
-.empty-state h2 {
-  font-family: 'DM Serif Display', serif;
-  font-size: 22px;
-  color: var(--forest);
-  margin-bottom: 8px;
-  font-weight: 400;
-}
-
-.empty-state p {
-  font-size: 13px;
-  color: var(--text-soft);
-  line-height: 1.7;
-  margin-bottom: 28px;
-}
-
-.suggestions { display: flex; flex-direction: column; gap: 7px; text-align: left; }
-
-.suggestion {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  padding: 11px 15px;
-  font-size: 13px;
-  color: var(--text);
-  cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
-  line-height: 1.5;
-}
-
-.suggestion:hover { border-color: var(--sage); background: var(--sage-l); }
-
-.suggestion strong {
-  display: block;
-  font-weight: 600;
-  font-size: 11px;
-  color: var(--sage);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 3px;
-}
-
-/* MESSAGES */
-.messages {
-  max-width: 680px;
-  margin: 0 auto;
-  padding: 0 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-}
-
-.message { display: flex; flex-direction: column; gap: 5px; }
-
-.message-role {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: var(--text-soft);
-}
-
-.message.user .message-role { color: var(--forest); }
-.message.assistant .message-role { color: var(--sage); }
-
-.message-body {
-  font-size: 15px;
-  line-height: 1.75;
-  color: var(--text);
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
-.message.user .message-body {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 16px;
-  font-size: 14px;
-}
-
-.lmn-block {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--sage);
-  border-radius: 8px;
-  padding: 20px 24px;
-  font-size: 14px;
-  line-height: 1.8;
-  white-space: pre-wrap;
-  margin-top: 6px;
-}
-
-.copy-btn {
-  margin-top: 8px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--sage);
-  background: var(--sage-l);
-  border: 1px solid var(--sage);
-  border-radius: 6px;
-  padding: 5px 11px;
-  cursor: pointer;
-  transition: background 0.15s;
-  font-family: 'Inter', sans-serif;
-}
-
-.copy-btn:hover { background: #D4EBE5; }
-.copy-btn.copied { color: var(--forest); }
-
-.policy-line {
-  font-size: 12px;
-  color: var(--text-soft);
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid var(--border);
-}
-
-.policy-line a { color: var(--sage); text-decoration: none; }
-.policy-line a:hover { text-decoration: underline; }
-
-/* TYPING */
-.typing { display: flex; align-items: center; gap: 5px; padding: 4px 0; }
-.typing span { width: 6px; height: 6px; background: var(--sage); border-radius: 50%; animation: bounce 1.2s infinite ease-in-out; }
-.typing span:nth-child(2) { animation-delay: 0.2s; }
-.typing span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes bounce { 0%,80%,100% { transform:translateY(0);opacity:.4; } 40% { transform:translateY(-5px);opacity:1; } }
-
-/* INPUT */
-.input-area {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  background: linear-gradient(to top, var(--bg) 80%, transparent);
-  padding: 14px 0 20px;
-}
-
-.input-inner { max-width: 680px; margin: 0 auto; padding: 0 24px; }
-
-.input-box {
-  display: flex;
-  align-items: flex-end;
-  gap: 9px;
-  background: var(--white);
-  border: 1.5px solid var(--border);
-  border-radius: 13px;
-  padding: 9px 11px 9px 15px;
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
-
-.input-box:focus-within {
-  border-color: var(--sage);
-  box-shadow: 0 0 0 3px rgba(74,124,111,0.1);
-}
-
-#userInput {
-  flex: 1;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  color: var(--text);
-  resize: none;
-  max-height: 160px;
-  min-height: 22px;
-  line-height: 1.6;
-}
-
-#userInput::placeholder { color: var(--text-soft); }
-
-#sendBtn {
-  width: 34px; height: 34px;
-  background: var(--forest);
-  border: none; border-radius: 8px;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  transition: background 0.15s;
-}
-
-#sendBtn:hover { background: var(--sage); }
-#sendBtn:disabled { background: var(--border); cursor: not-allowed; }
-#sendBtn svg { width: 15px; height: 15px; fill: var(--white); }
-
-.input-hint { font-size: 11px; color: var(--text-soft); text-align: center; margin-top: 7px; }
+  :root {
+    --green: #2D5A3D;
+    --green-light: #3a7050;
+    --green-dark: #1e3d2a;
+    --cream: #F0EDE8;
+    --cream-dark: #E8E4DE;
+    --charcoal: #1C1C1A;
+    --charcoal-light: #3d3d3a;
+    --muted: #8a8880;
+    --white: #FAFAF8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--cream);
+    color: var(--charcoal);
+    font-size: 14px;
+    letter-spacing: 0.01em;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 60px;
+    transition: background 0.4s, padding 0.4s;
+  }
+
+  nav.scrolled {
+    background: rgba(240,237,232,0.96);
+    backdrop-filter: blur(12px);
+    padding: 18px 60px;
+    border-bottom: 0.5px solid rgba(45,90,61,0.1);
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 28px;
+    color: var(--green);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--charcoal);
+    text-decoration: none;
+    opacity: 0.65;
+    transition: opacity 0.2s;
+  }
+
+  .nav-links a:hover { opacity: 1; }
+
+  .nav-cta {
+    background: var(--green);
+    color: var(--white) !important;
+    padding: 10px 22px;
+    opacity: 1 !important;
+    transition: background 0.2s !important;
+  }
+
+  .nav-cta:hover { background: var(--green-light) !important; }
+
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  .hamburger span {
+    display: block;
+    width: 24px;
+    height: 1px;
+    background: var(--green);
+  }
+
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--cream);
+    z-index: 99;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+  }
+
+  .mobile-menu.open { display: flex; }
+
+  .mobile-menu a {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 36px;
+    font-weight: 300;
+    color: var(--green);
+    text-decoration: none;
+  }
+
+  .mobile-close {
+    position: absolute;
+    top: 28px; right: 28px;
+    font-size: 28px;
+    color: var(--green);
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 140px 40px 100px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at 50% 60%, rgba(45,90,61,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(72px, 12vw, 140px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--green);
+    line-height: 0.88;
+    letter-spacing: -0.03em;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.35s forwards;
+  }
+
+  .hero-tagline {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--charcoal);
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.5s forwards;
+    margin-bottom: 52px;
+  }
+
+  .hero-sub {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--charcoal-light);
+    max-width: 440px;
+    line-height: 1.85;
+    margin: 0 auto 56px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.65s forwards;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.8s forwards;
+  }
+
+  .btn-primary {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--green);
+    padding: 16px 36px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+    display: inline-block;
+  }
+
+  .btn-primary:hover { background: var(--green-light); transform: translateY(-1px); }
+
+  .btn-ghost {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--green);
+    text-decoration: none;
+    border-bottom: 0.5px solid var(--green);
+    padding-bottom: 3px;
+    transition: opacity 0.2s;
+  }
+
+  .btn-ghost:hover { opacity: 0.6; }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 48px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 1.2s forwards;
+  }
+
+  .hero-scroll span {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .scroll-line {
+    width: 0.5px;
+    height: 40px;
+    background: var(--green);
+    opacity: 0.3;
+    animation: scrollPulse 2s ease infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.15; }
+    50% { opacity: 0.5; }
+  }
+
+  /* BETWEEN STRIP — the double meaning */
+  .between-strip {
+    background: var(--green);
+    padding: 80px 60px;
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr 1px 1fr;
+    gap: 0;
+    align-items: center;
+  }
+
+  .between-divider {
+    width: 0.5px;
+    height: 80px;
+    background: rgba(240,237,232,0.15);
+    justify-self: center;
+  }
+
+  .between-item {
+    padding: 0 52px;
+    text-align: center;
+  }
+
+  .between-item-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(240,237,232,0.4);
+    margin-bottom: 16px;
+  }
+
+  .between-item-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(16px, 2vw, 22px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--cream);
+    line-height: 1.5;
+  }
+
+  .between-item-text em {
+    font-style: normal;
+    opacity: 0.5;
+    font-size: 0.85em;
+  }
+
+  .between-tagline-row {
+    background: var(--green-dark);
+    padding: 20px 60px;
+    text-align: center;
+    border-top: 0.5px solid rgba(240,237,232,0.08);
+  }
+
+  .between-tagline-row p {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: rgba(240,237,232,0.35);
+  }
+
+  /* PROGRAMS */
+  .programs { background: var(--white); padding: 120px 60px; }
+
+  .programs-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 72px;
+    gap: 40px;
+  }
+
+  .programs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .program-card {
+    background: var(--cream);
+    padding: 52px 44px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+
+  .program-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 2px; height: 0;
+    background: var(--green);
+    transition: height 0.4s ease;
+  }
+
+  .program-card:hover { background: var(--cream-dark); }
+  .program-card:hover::before { height: 100%; }
+
+  .program-number {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  .program-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 38px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--green);
+    margin-bottom: 6px;
+    line-height: 1;
+  }
+
+  .program-sub {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  .program-desc {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--charcoal-light);
+    line-height: 1.8;
+    margin-bottom: 32px;
+  }
+
+  .program-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .program-list li {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--charcoal-light);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .program-list li::before {
+    content: '';
+    width: 14px;
+    height: 0.5px;
+    background: var(--green);
+    flex-shrink: 0;
+  }
+
+  /* HOW IT WORKS */
+  .how {
+    background: var(--cream);
+    padding: 120px 60px;
+    display: flex;
+    gap: 100px;
+    align-items: flex-start;
+  }
+
+  .how-left { flex: 1; position: sticky; top: 120px; }
+  .how-right { flex: 1.1; }
+
+  .how-step {
+    display: flex;
+    gap: 28px;
+    padding: 36px 0;
+    border-top: 0.5px solid rgba(45,90,61,0.12);
+  }
+
+  .how-step:last-child { border-bottom: 0.5px solid rgba(45,90,61,0.12); }
+
+  .step-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 44px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--green);
+    opacity: 0.2;
+    line-height: 1;
+    flex-shrink: 0;
+    width: 44px;
+  }
+
+  .step-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--charcoal);
+    margin-bottom: 8px;
+  }
+
+  .step-desc {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--charcoal-light);
+    line-height: 1.8;
+  }
+
+  .how-callout {
+    background: var(--green);
+    padding: 48px 44px;
+    margin-top: 48px;
+  }
+
+  .how-callout p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--cream);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .how-callout span {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(240,237,232,0.4);
+  }
+
+  /* PARTNER — green background, gated */
+  .partner {
+    background: var(--green);
+    padding: 120px 60px;
+  }
+
+  .partner-inner {
+    display: flex;
+    gap: 100px;
+    align-items: flex-start;
+  }
+
+  .partner-left { flex: 1; }
+  .partner-right { flex: 1; }
+
+  .partner .section-label {
+    color: rgba(240,237,232,0.45);
+  }
+
+  .partner .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 5vw, 52px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--cream);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+
+  .partner .section-body {
+    font-size: 14px;
+    font-weight: 300;
+    color: rgba(240,237,232,0.7);
+    line-height: 1.9;
+  }
+
+  .partner-pillars {
+    list-style: none;
+    margin-top: 48px;
+  }
+
+  .partner-pillars li {
+    padding: 28px 0;
+    border-top: 0.5px solid rgba(240,237,232,0.1);
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .partner-pillars li:last-child {
+    border-bottom: 0.5px solid rgba(240,237,232,0.1);
+  }
+
+  .pillar-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    font-style: italic;
+    color: rgba(240,237,232,0.2);
+    flex-shrink: 0;
+    line-height: 1;
+    width: 28px;
+  }
+
+  .pillar-text h4 {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cream);
+    margin-bottom: 8px;
+  }
+
+  .pillar-text p {
+    font-size: 13px;
+    font-weight: 300;
+    color: rgba(240,237,232,0.65);
+    line-height: 1.75;
+  }
+
+  /* PARTNER GATE */
+  .partner-gate {
+    background: rgba(240,237,232,0.06);
+    border: 0.5px solid rgba(240,237,232,0.15);
+    padding: 52px 44px;
+  }
+
+  .gate-eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(240,237,232,0.4);
+    margin-bottom: 20px;
+  }
+
+  .gate-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--cream);
+    margin-bottom: 16px;
+    line-height: 1.3;
+  }
+
+  .gate-body {
+    font-size: 13px;
+    font-weight: 300;
+    color: rgba(240,237,232,0.6);
+    line-height: 1.8;
+    margin-bottom: 36px;
+  }
+
+  /* GATE FORM */
+  .gate-form { display: flex; flex-direction: column; gap: 16px; }
+
+  .gate-form input,
+  .gate-form select {
+    width: 100%;
+    background: rgba(240,237,232,0.06);
+    border: 0.5px solid rgba(240,237,232,0.15);
+    padding: 14px 16px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--cream);
+    outline: none;
+    transition: border-color 0.2s;
+    appearance: none;
+  }
+
+  .gate-form input::placeholder { color: rgba(240,237,232,0.3); }
+
+  .gate-form input:focus,
+  .gate-form select:focus {
+    border-color: rgba(240,237,232,0.4);
+  }
+
+  .gate-form select {
+    color: rgba(240,237,232,0.6);
+  }
+
+  .gate-form select option {
+    background: var(--green-dark);
+    color: var(--cream);
+  }
+
+  .gate-submit {
+    width: 100%;
+    background: var(--cream);
+    color: var(--green);
+    border: none;
+    padding: 16px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    margin-top: 4px;
+  }
+
+  .gate-submit:hover {
+    background: var(--cream-dark);
+  }
+
+  .gate-note {
+    font-size: 11px;
+    font-weight: 300;
+    color: rgba(240,237,232,0.3);
+    text-align: center;
+    line-height: 1.6;
+    margin-top: 4px;
+  }
+
+  /* MEMBER */
+  .member {
+    background: var(--cream-dark);
+    padding: 120px 60px;
+  }
+
+  .member-inner {
+    display: flex;
+    gap: 100px;
+    align-items: flex-start;
+  }
+
+  .member-left { flex: 1; }
+  .member-right { flex: 1; }
+
+  .member-form {
+    background: var(--white);
+    padding: 52px 44px;
+  }
+
+  .form-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--charcoal);
+    margin-bottom: 36px;
+  }
+
+  .form-group { margin-bottom: 20px; }
+
+  .form-group label {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    background: var(--cream);
+    border: 0.5px solid rgba(45,90,61,0.15);
+    padding: 14px 16px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--charcoal);
+    outline: none;
+    transition: border-color 0.2s;
+    appearance: none;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus { border-color: var(--green); }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .form-submit {
+    width: 100%;
+    background: var(--green);
+    color: var(--white);
+    border: none;
+    padding: 16px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.2s;
+  }
+
+  .form-submit:hover { background: var(--green-light); }
+
+  .form-note {
+    font-size: 11px;
+    font-weight: 300;
+    color: var(--muted);
+    margin-top: 16px;
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  .member-features { list-style: none; margin-top: 20px; }
+
+  .member-features li {
+    padding: 24px 0;
+    border-top: 0.5px solid rgba(45,90,61,0.12);
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .member-features li:last-child { border-bottom: 0.5px solid rgba(45,90,61,0.12); }
+
+  .feature-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .feature-icon svg { width: 16px; height: 16px; fill: none; stroke: var(--cream); stroke-width: 1.5; }
+
+  .feature-text h4 {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--charcoal);
+    margin-bottom: 6px;
+  }
+
+  .feature-text p {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--charcoal-light);
+    line-height: 1.7;
+  }
+
+  /* SECTION HELPERS */
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--charcoal);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+
+  .section-body {
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--charcoal-light);
+    line-height: 1.9;
+    max-width: 480px;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--charcoal);
+    padding: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 28px;
+    color: var(--cream);
+    opacity: 0.6;
+    text-decoration: none;
+  }
+
+  .footer-center {
+    font-size: 11px;
+    font-weight: 300;
+    color: rgba(240,237,232,0.3);
+    letter-spacing: 0.06em;
+    text-align: center;
+    line-height: 1.8;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+
+  .footer-links a {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(240,237,232,0.3);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--cream); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* MOBILE */
+  @media (max-width: 900px) {
+    nav { padding: 24px 28px; }
+    nav.scrolled { padding: 16px 28px; }
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+
+    .hero { padding: 120px 28px 80px; }
+
+    .between-strip {
+      grid-template-columns: 1fr;
+      padding: 60px 28px;
+      gap: 40px;
+    }
+
+    .between-divider { display: none; }
+    .between-item { padding: 0; }
+    .between-tagline-row { padding: 20px 28px; }
+
+    .programs { padding: 80px 28px; }
+    .programs-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+    .programs-grid { grid-template-columns: 1fr; }
+    .program-card { padding: 40px 28px; }
+
+    .how { flex-direction: column; padding: 80px 28px; gap: 60px; }
+    .how-left { position: static; }
+
+    .partner { padding: 80px 28px; }
+    .partner-inner { flex-direction: column; gap: 60px; }
+    .partner-gate { padding: 40px 28px; }
+
+    .member { padding: 80px 28px; }
+    .member-inner { flex-direction: column; gap: 60px; }
+    .member-form { padding: 36px 28px; }
+    .form-row { grid-template-columns: 1fr; }
+
+    footer {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 48px 28px;
+      gap: 28px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero-actions { flex-direction: column; gap: 16px; }
+  }
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════
-     LOGIN SCREEN
-══════════════════════════════ -->
-<div id="loginScreen">
-  <div class="login-card">
-    <div class="login-logo">MAST <span>Provider</span></div>
-    <div class="login-sub">Your genetics AI</div>
-
-    <div class="field">
-      <label>Email</label>
-      <input type="email" id="loginEmail" placeholder="you@practice.com" autocomplete="email" />
-    </div>
-    <div class="field">
-      <label>Password</label>
-      <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password"
-             onkeydown="if(event.key==='Enter') doLogin()" />
-    </div>
-
-    <button class="login-btn" id="loginBtn" onclick="doLogin()">Sign in</button>
-    <div class="login-error" id="loginError"></div>
-
-
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">Between</a>
+  <ul class="nav-links">
+    <li><a href="#programs">Programs</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#partner">For Partners</a></li>
+    <li><a href="#member" class="nav-cta">Get Started</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="openMenu()">
+    <span></span><span></span><span></span>
   </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" onclick="closeMenu()">×</button>
+  <a href="#programs" onclick="closeMenu()">Programs</a>
+  <a href="#how" onclick="closeMenu()">How It Works</a>
+  <a href="#partner" onclick="closeMenu()">For Partners</a>
+  <a href="#member" onclick="closeMenu()">Get Started</a>
 </div>
 
-<!-- ══════════════════════════════
-     APP SHELL
-══════════════════════════════ -->
-<div id="appShell" style="display:none; height:100vh; flex-direction:column;">
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">Clinical wellness — redefined</p>
+  <h1 class="hero-title">Between</h1>
+  <p class="hero-tagline">Where Care Lives</p>
+  <p class="hero-sub">Clinical programs for weight, hormones, and optimization — managed by real clinicians, available where you already go.</p>
+  <div class="hero-actions">
+    <a href="#member" class="btn-primary">Become a Member</a>
+    <a href="#partner" class="btn-ghost">Partner with us</a>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
 
-  <header>
-    <div class="wordmark">MAST <span>Provider</span></div>
-    <div class="header-right">
-      <span class="user-name" id="userNameDisplay"></span>
-      <button class="header-btn" onclick="doLogout()">Sign out</button>
-    </div>
-  </header>
-
-  <div class="body-row">
-
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-      <div class="sidebar-header">
-        <span class="sidebar-title">Conversations</span>
-        <button class="new-chat-btn" onclick="newChat()">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-          New
-        </button>
-      </div>
-      <div class="sidebar-list" id="sidebarList">
-        <div class="sidebar-empty">No conversations yet.<br>Start by asking a coverage question.</div>
-      </div>
-    </div>
-
-    <!-- MAIN -->
-    <div class="main">
-      <div class="conversation" id="conversation">
-
-        <div class="empty-state" id="emptyState">
-          <div class="empty-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 12h6M9 16h4M7 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2h-2"/>
-              <path d="M9 3h6v4H9z"/>
-            </svg>
-          </div>
-          <h2>Coverage questions, answered.</h2>
-          <p>Ask about coverage requirements, documentation needed before ordering, or request a letter of medical necessity. Policy citations in every answer.</p>
-          <div class="suggestions">
-            <div class="suggestion" onclick="useSuggestion(this)">
-              <strong>Coverage check</strong>
-              Will BRCA1/2 full sequencing (81162) cover for a patient in FL with a first-degree relative with ovarian cancer and no prior testing?
-            </div>
-            <div class="suggestion" onclick="useSuggestion(this)">
-              <strong>hEDS documentation</strong>
-              My patient meets clinical criteria for hEDS. What genetic testing can I order and what do I need to document to support authorization?
-            </div>
-            <div class="suggestion" onclick="useSuggestion(this)">
-              <strong>Prenatal carrier screening</strong>
-              What does Noridian require to cover expanded carrier screening for a patient in CA at 10 weeks gestation?
-            </div>
-            <div class="suggestion" onclick="useSuggestion(this)">
-              <strong>Letter of medical necessity</strong>
-              Draft an LMN for Lynch syndrome germline testing (81292) for a patient in MA with personal history of colorectal cancer at age 44 and MSI-H tumor.
-            </div>
-          </div>
-        </div>
-
-        <div class="messages" id="messages" style="display:none;"></div>
-      </div>
-
-      <div class="input-area">
-        <div class="input-inner">
-          <div class="input-box">
-            <textarea id="userInput"
-              placeholder="Ask about coverage, documentation requirements, or request an LMN…"
-              rows="1"
-              onkeydown="handleKey(event)"
-              oninput="autoResize(this)"></textarea>
-            <button id="sendBtn" onclick="sendMessage()">
-              <svg viewBox="0 0 16 16"><path d="M1.5 1.5l13 6.5-13 6.5V9.5l9-3-9-3V1.5z"/></svg>
-            </button>
-          </div>
-          <div class="input-hint">Your genetics AI · Verify coverage with payer before ordering</div>
-        </div>
-      </div>
-    </div>
-
+<!-- BETWEEN STRIP — multiple meanings -->
+<div class="between-strip">
+  <div class="between-item">
+    <p class="between-item-label">Between</p>
+    <p class="between-item-text">Who you are today<br><em>&</em><br>Who you will become</p>
+  </div>
+  <div class="between-divider"></div>
+  <div class="between-item">
+    <p class="between-item-label">Between</p>
+    <p class="between-item-text">The clinical<br><em>&</em><br>The personal</p>
+  </div>
+  <div class="between-divider"></div>
+  <div class="between-item">
+    <p class="between-item-label">Between</p>
+    <p class="between-item-text">Traditional medicine<br><em>&</em><br>How you actually live</p>
   </div>
 </div>
+<div class="between-tagline-row">
+  <p>Where Care Lives</p>
+</div>
+
+<!-- PROGRAMS -->
+<section class="programs" id="programs">
+  <div class="programs-header">
+    <div>
+      <p class="section-label">Programs</p>
+      <h2 class="section-title">Care that goes<br>further than a prescription.</h2>
+    </div>
+    <p style="font-size:13px;font-weight:300;color:var(--charcoal-light);max-width:300px;line-height:1.8;">Every Between program is built around your biology, monitored continuously, and adjusted as you progress — not a one-time prescription.</p>
+  </div>
+  <div class="programs-grid">
+    <div class="program-card">
+      <p class="program-number">01</p>
+      <h3 class="program-name">Weight</h3>
+      <p class="program-sub">GLP-1 Program</p>
+      <p class="program-desc">A medically supervised program built around how your body actually responds. Not a prescription and a goodbye — a protocol that evolves with you, adjusted as you progress.</p>
+      <ul class="program-list">
+        <li>Clinical intake & evaluation</li>
+        <li>Protocol built to your biology</li>
+        <li>Ongoing dose adjustments</li>
+        <li>Continuous progress monitoring</li>
+      </ul>
+    </div>
+    <div class="program-card">
+      <p class="program-number">02</p>
+      <h3 class="program-name">Equilibrium</h3>
+      <p class="program-sub">Hormone Health Program</p>
+      <p class="program-desc">You're doing everything right — and something still feels off. The sleep, the weight, the energy, the mood. For women navigating perimenopause and menopause, Between offers a program that actually addresses what's happening — not just manages the symptoms. Labs that tell the full story. A protocol built around your body. Support that stays with you.</p>
+      <ul class="program-list">
+        <li>Full hormonal assessment</li>
+        <li>Personalized HRT protocol</li>
+        <li>Symptom tracking over time</li>
+        <li>Ongoing clinical support</li>
+      </ul>
+    </div>
+    <div class="program-card">
+      <p class="program-number">03</p>
+      <h3 class="program-name">Testosterone</h3>
+      <p class="program-sub">TRT Program</p>
+      <p class="program-desc">For those who know something is off. Energy, clarity, drive — a comprehensive panel and a protocol built around your numbers, not a generic starting point.</p>
+      <ul class="program-list">
+        <li>Comprehensive lab panel</li>
+        <li>Protocol built to your numbers</li>
+        <li>Ongoing level monitoring</li>
+        <li>Adjustments as you progress</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="how-left">
+    <p class="section-label">How It Works</p>
+    <h2 class="section-title">Simple.<br>Private.<br>Ongoing.</h2>
+    <p class="section-body">Start with a short intake — five minutes, on your phone. A board-certified clinician reviews your information and reaches out within 48 hours. If Between is a fit, your protocol is built, your prescription is delivered, and your program begins. We're not here for a single moment in your health — we're here for the journey. Where care actually lives is in everyday life, and that's exactly where Between meets you.</p>
+    <div class="how-callout">
+      <p>"Between where you are and where you want to be — that's where we live."</p>
+      <span>Between — Where Care Lives</span>
+    </div>
+  </div>
+  <div class="how-right">
+    <div>
+      <div class="how-step">
+        <div class="step-num">1</div>
+        <div>
+          <p class="step-title">Intake</p>
+          <p class="step-desc">Five minutes. On your phone. Tell us your goals, your history, and what you've already tried. No appointment needed.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">2</div>
+        <div>
+          <p class="step-title">Clinician review</p>
+          <p class="step-desc">A board-certified clinician reviews your intake within 48 hours. They may order labs before your first visit — everything coordinated for you.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">3</div>
+        <div>
+          <p class="step-title">Your protocol begins</p>
+          <p class="step-desc">Your prescription is written and delivered. Your program starts. Your protocol evolves as your body responds — nothing static, nothing generic.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">4</div>
+        <div>
+          <p class="step-title">Ongoing, everywhere</p>
+          <p class="step-desc">Between is built for real life — not appointments on a calendar. We stay with you through the progress, the plateaus, and everything in between.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARTNER — green, gated -->
+<section class="partner" id="partner">
+  <div class="partner-inner">
+    <div class="partner-left">
+      <p class="section-label" style="color:rgba(240,237,232,0.4);">For Partners</p>
+      <h2 class="partner-title" style="font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,52px);font-weight:300;font-style:italic;color:var(--cream);line-height:1.15;letter-spacing:-0.02em;margin-bottom:28px;">Your clients are already<br>having this conversation.<br><em style="font-style:normal;opacity:0.55;">Shouldn't you be part of it?</em></h2>
+      <p style="font-size:14px;font-weight:300;color:rgba(240,237,232,0.65);line-height:1.9;max-width:460px;">The conversations are already happening in your lobby, your treatment rooms, your classes. Your clients trust you with how they look and how they feel — and they're asking about what's next. Between gives you the clinical infrastructure to say yes.</p>
+
+      <ul class="partner-pillars">
+        <li>
+          <div class="pillar-num">1</div>
+          <div class="pillar-text">
+            <h4>Demand</h4>
+            <p>Your clients are already looking for this. Between gives you the program to meet them — without sending them somewhere else to find it.</p>
+          </div>
+        </li>
+        <li>
+          <div class="pillar-num">2</div>
+          <div class="pillar-text">
+            <h4>Expansion</h4>
+            <p>Board-certified clinicians own every medical touchpoint. You add a clinical program to your offering without adding anything to your operations.</p>
+          </div>
+        </li>
+        <li>
+          <div class="pillar-num">3</div>
+          <div class="pillar-text">
+            <h4>Seamless</h4>
+            <p>Between runs quietly in the background. Your members experience it as a natural extension of what you already do — because it is.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="partner-right">
+      <div class="partner-gate">
+        <p class="gate-eyebrow">Partner Program</p>
+        <h3 class="gate-title">Request partnership details.</h3>
+        <p class="gate-body">Between partners with a curated network of med spas, wellness studios, and fitness brands. Tell us about your business and we'll be in touch with everything you need to evaluate the opportunity — privately.</p>
+        <div class="gate-form">
+          <form name="partner-request" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="partner-request">
+          <p style="display:none"><input name="bot-field"></p>
+          <input type="text" placeholder="Your name">
+          <input type="text" placeholder="Business name">
+          <input type="email" placeholder="Email address">
+          <input type="tel" placeholder="Phone number">
+          <select>
+            <option value="" disabled selected>Type of business</option>
+            <option>Med Spa</option>
+            <option>Fitness Studio / Gym</option>
+            <option>Wellness Center</option>
+            <option>Other</option>
+          </select>
+          <input type="text" placeholder="City, State">
+          <button type="submit" class="gate-submit" id="gateSubmit">Request Information</button>
+          <p class="gate-note">All inquiries are confidential. A member of the Between team will respond within one business day.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MEMBER -->
+<section class="member" id="member">
+  <div class="member-inner">
+    <div class="member-left">
+      <p class="section-label">Become a Member</p>
+      <h2 class="section-title">Ready when<br>you are.</h2>
+      <p class="section-body">Tell us a little about what you're looking for. A clinician will review your intake and reach out within 48 hours — no commitment, no pressure.</p>
+      <ul class="member-features">
+        <li>
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <div class="feature-text">
+            <h4>Board-certified clinicians</h4>
+            <p>Every protocol is built and supervised by licensed medical professionals.</p>
+          </div>
+        </li>
+        <li>
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          </div>
+          <div class="feature-text">
+            <h4>Private by design</h4>
+            <p>Your health is your business. Between is HIPAA-compliant and entirely discreet.</p>
+          </div>
+        </li>
+        <li>
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          </div>
+          <div class="feature-text">
+            <h4>Ongoing — not one-time</h4>
+            <p>Monthly check-ins, continuous monitoring, and protocol adjustments that evolve with you.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="member-right">
+      <div class="member-form">
+        <p class="form-title">Start your intake</p>
+        <form name="member-intake" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="member-intake">
+        <p style="display:none"><input name="bot-field"></p>
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" placeholder="First">
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" placeholder="Last">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" placeholder="you@email.com">
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" placeholder="(615) 000-0000">
+        </div>
+        <div class="form-group">
+          <label>Program Interest</label>
+          <select>
+            <option value="">Select a program</option>
+            <option>Weight — GLP-1</option>
+            <option>Testosterone — TRT</option>
+            <option>Hormones — HRT</option>
+            <option>Not sure — help me decide</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>How did you hear about us?</label>
+          <select>
+            <option value="">Select one</option>
+            <option>Through my gym or studio</option>
+            <option>Through my med spa</option>
+            <option>Friend or referral</option>
+            <option>Search</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <button type="submit" class="form-submit" id="memberSubmit">Request My Consultation</button>
+        <p class="form-note">A clinician will reach out within 48 hours. No commitment required.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="footer-logo">Between</a>
+  <p class="footer-center">MASA LLC DBA Between · between-care.com<br>© 2026 Between. All rights reserved.</p>
+  <ul class="footer-links">
+    <li><a href="#">Privacy</a></li>
+    <li><a href="#">Terms</a></li>
+    <li><a href="mailto:partners@between-care.com">Contact</a></li>
+  </ul>
+</footer>
 
 <script>
-// ══════════════════════════════
-// SUPABASE
-// ══════════════════════════════
-const SUPABASE_URL  = 'https://hmaegczzmoodefhxhiip.supabase.co';
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtYWVnY3p6bW9vZGVmaHhoaWlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1MzI5NDUsImV4cCI6MjA5NTEwODk0NX0.-SuBBRfp5Jtn5uCRLGWXUaq9buxZmDJgxvmA8aJAiFQ';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-
-const API_URL = 'https://mast-advisor.onrender.com/advisor';
-
-// ══════════════════════════════
-// STATE
-// ══════════════════════════════
-let currentUser     = null;
-let currentSession  = null;   // { id, title }
-let history         = [];
-let isLoading       = false;
-let conversations   = [];     // cached sidebar list
-
-// ══════════════════════════════
-// AUTH
-// ══════════════════════════════
-async function doLogin() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const pw    = document.getElementById('loginPassword').value;
-  const errEl = document.getElementById('loginError');
-  const btn   = document.getElementById('loginBtn');
-
-  errEl.textContent = '';
-  if (!email || !pw) { errEl.textContent = 'Email and password are required.'; return; }
-
-  btn.disabled = true;
-  btn.textContent = 'Signing in…';
-
-  const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
-
-  if (error) {
-    errEl.textContent = error.message || 'Sign in failed. Check your credentials.';
-    btn.disabled = false;
-    btn.textContent = 'Sign in';
-    return;
-  }
-
-  currentUser = data.user;
-  showApp();
-}
-
-async function doLogout() {
-  await sb.auth.signOut();
-  currentUser = null;
-  currentSession = null;
-  history = [];
-  conversations = [];
-  document.getElementById('appShell').style.display = 'none';
-  document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('loginPassword').value = '';
-  document.getElementById('loginError').textContent = '';
-}
-
-// Check existing session on load
-window.addEventListener('load', async () => {
-  const { data } = await sb.auth.getSession();
-  if (data?.session?.user) {
-    currentUser = data.session.user;
-    showApp();
-  }
-});
-
-// ══════════════════════════════
-// APP INIT
-// ══════════════════════════════
-function showApp() {
-  document.getElementById('loginScreen').style.display = 'none';
-  const shell = document.getElementById('appShell');
-  shell.style.display = 'flex';
-
-  // Display name: use email prefix or full_name from metadata
-  const meta = currentUser.user_metadata || {};
-  const displayName = meta.full_name || currentUser.email.split('@')[0];
-  document.getElementById('userNameDisplay').textContent = displayName;
-
-  loadConversations();
-}
-
-// ══════════════════════════════
-// CONVERSATIONS — SUPABASE
-// ══════════════════════════════
-async function loadConversations() {
-  const { data, error } = await sb
-    .from('provider_conversations')
-    .select('id, title, created_at, updated_at')
-    .eq('user_id', currentUser.id)
-    .order('updated_at', { ascending: false })
-    .limit(50);
-
-  if (error) { console.error('Load convs error', error); return; }
-  conversations = data || [];
-  renderSidebar();
-}
-
-function renderSidebar() {
-  const list = document.getElementById('sidebarList');
-  if (!conversations.length) {
-    list.innerHTML = '<div class="sidebar-empty">No conversations yet.<br>Start by asking a coverage question.</div>';
-    return;
-  }
-  list.innerHTML = conversations.map(c => `
-    <div class="conv-item ${currentSession?.id === c.id ? 'active' : ''}"
-         onclick="loadConversation('${c.id}')">
-      <div class="conv-title">${escHtml(c.title || 'Untitled')}</div>
-      <div class="conv-date">${formatDate(c.updated_at)}</div>
-    </div>
-  `).join('');
-}
-
-async function loadConversation(convId) {
-  // Load messages for this conversation
-  const { data, error } = await sb
-    .from('provider_messages')
-    .select('role, content, created_at')
-    .eq('conversation_id', convId)
-    .order('created_at', { ascending: true });
-
-  if (error) { console.error('Load messages error', error); return; }
-
-  const conv = conversations.find(c => c.id === convId);
-  currentSession = { id: convId, title: conv?.title || 'Untitled' };
-
-  // Rebuild history array
-  history = (data || []).map(m => ({ role: m.role, content: m.content }));
-
-  // Render messages
-  clearMessages();
-  if (history.length) {
-    document.getElementById('emptyState').style.display = 'none';
-    document.getElementById('messages').style.display = 'flex';
-    history.forEach(m => {
-      document.getElementById('messages').appendChild(renderMessage(m.role, m.content));
-    });
-    scrollToBottom();
-  }
-
-  renderSidebar(); // refresh active state
-}
-
-async function saveMessage(convId, role, content) {
-  await sb.from('provider_messages').insert({
-    conversation_id: convId,
-    user_id: currentUser.id,
-    role,
-    content
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
   });
-}
 
-async function createConversation(firstMessage) {
-  // Title = first 60 chars of user message
-  const title = firstMessage.length > 60
-    ? firstMessage.substring(0, 60) + '…'
-    : firstMessage;
+  function openMenu() { document.getElementById('mobileMenu').classList.add('open'); }
+  function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
 
-  const { data, error } = await sb.from('provider_conversations').insert({
-    user_id: currentUser.id,
-    title
-  }).select('id, title').single();
+  document.getElementById('memberSubmit').addEventListener('click', function(e) {
+    e.preventDefault();
+    this.textContent = 'Request Received —';
+    this.style.background = 'var(--charcoal)';
+    setTimeout(() => {
+      this.textContent = 'Request My Consultation';
+      this.style.background = '';
+    }, 3000);
+  });
 
-  if (error) { console.error('Create conv error', error); return null; }
-  return data;
-}
-
-async function touchConversation(convId) {
-  await sb.from('provider_conversations')
-    .update({ updated_at: new Date().toISOString() })
-    .eq('id', convId);
-}
-
-// ══════════════════════════════
-// CHAT UI
-// ══════════════════════════════
-function newChat() {
-  currentSession = null;
-  history = [];
-  clearMessages();
-  document.getElementById('emptyState').style.display = '';
-  document.getElementById('messages').style.display = 'none';
-  document.getElementById('userInput').value = '';
-  autoResize(document.getElementById('userInput'));
-  renderSidebar();
-}
-
-function clearMessages() {
-  document.getElementById('messages').innerHTML = '';
-}
-
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 160) + 'px';
-}
-
-function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-}
-
-function useSuggestion(el) {
-  const strong = el.querySelector('strong');
-  const text = el.textContent.replace(strong.textContent, '').trim();
-  document.getElementById('userInput').value = text;
-  autoResize(document.getElementById('userInput'));
-  sendMessage();
-}
-
-// ══════════════════════════════
-// SEND MESSAGE
-// ══════════════════════════════
-async function sendMessage() {
-  const input = document.getElementById('userInput');
-  const text = input.value.trim();
-  if (!text || isLoading) return;
-
-  // Show messages
-  document.getElementById('emptyState').style.display = 'none';
-  const messagesEl = document.getElementById('messages');
-  messagesEl.style.display = 'flex';
-
-  // Create conversation in Supabase if first message
-  if (!currentSession) {
-    const conv = await createConversation(text);
-    if (conv) {
-      currentSession = conv;
-      conversations.unshift({ ...conv, updated_at: new Date().toISOString() });
-      renderSidebar();
-    }
-  }
-
-  // Render user message
-  messagesEl.appendChild(renderMessage('user', text));
-
-  // Save user message to Supabase
-  if (currentSession) {
-    await saveMessage(currentSession.id, 'user', text);
-  }
-
-  // Add to local history
-  history.push({ role: 'user', content: text });
-
-  // Clear input
-  input.value = '';
-  input.style.height = 'auto';
-
-  // Typing indicator
-  const typingEl = showTyping();
-  messagesEl.appendChild(typingEl);
-  scrollToBottom();
-
-  isLoading = true;
-  document.getElementById('sendBtn').disabled = true;
-
-  try {
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: text,
-        history: history.slice(0, -1),
-        mode: 'provider',
-        session_id: currentSession?.id || crypto.randomUUID(),
-        user_id: currentUser?.id,
-        client_name: 'Swan Health Genetics',
-        client_states: 'CA,FL,NJ,MA,WA,NH',
-        role: 'genetic_counselor',
-        vertical: 'healthcare',
-        entry_point: 'provider_web'
-      })
-    });
-
-    const data = await res.json();
-    const reply = data.reply || 'Something went wrong. Please try again.';
-
-    typingEl.remove();
-
-    const assistantMsg = renderMessage('assistant', reply);
-    messagesEl.appendChild(assistantMsg);
-
-    // Save assistant message + touch conversation
-    if (currentSession) {
-      await saveMessage(currentSession.id, 'assistant', reply);
-      await touchConversation(currentSession.id);
-      // Refresh sidebar order
-      conversations = conversations.filter(c => c.id !== currentSession.id);
-      const conv = conversations.find ? conversations : [];
-      conversations.unshift({ ...currentSession, updated_at: new Date().toISOString() });
-      renderSidebar();
-    }
-
-    history.push({ role: 'assistant', content: reply });
-    if (history.length > 20) history = history.slice(-20);
-
-    scrollToBottom();
-
-  } catch (err) {
-    typingEl.remove();
-    messagesEl.appendChild(renderMessage('assistant', 'Unable to reach the coverage advisor. Please check your connection and try again.'));
-    scrollToBottom();
-  }
-
-  isLoading = false;
-  document.getElementById('sendBtn').disabled = false;
-  input.focus();
-}
-
-// ══════════════════════════════
-// RENDER
-// ══════════════════════════════
-function isLMNContent(text) {
-  return (text.includes('To Whom It May Concern') || text.includes('Re: Prior Authorization') || text.includes('Re: Appeal')) &&
-         text.includes('Katharina Schwan');
-}
-
-function renderMessage(role, content) {
-  const div = document.createElement('div');
-  div.className = `message ${role}`;
-
-  const roleLabel = document.createElement('div');
-  roleLabel.className = 'message-role';
-  roleLabel.textContent = role === 'user' ? 'You' : 'Ma · MAST Provider';
-  div.appendChild(roleLabel);
-
-  if (role === 'assistant' && isLMNContent(content)) {
-    const letterStart = content.search(/\[Date\]|Re: Prior Authorization|Re: Appeal|To Whom It May Concern/);
-    const policyMatch = content.match(/Policy basis:.*$/m);
-
-    const introProse = letterStart > 0 ? content.substring(0, letterStart).trim() : '';
-    let letterBody = letterStart >= 0 ? content.substring(letterStart) : content;
-    if (policyMatch) letterBody = letterBody.replace(policyMatch[0], '').trim();
-
-    if (introProse) {
-      const introEl = document.createElement('div');
-      introEl.className = 'message-body';
-      introEl.textContent = introProse;
-      div.appendChild(introEl);
-    }
-
-    const lmnEl = document.createElement('div');
-    lmnEl.className = 'lmn-block';
-    lmnEl.textContent = letterBody;
-    div.appendChild(lmnEl);
-
-    const copyBtn = document.createElement('button');
-    copyBtn.className = 'copy-btn';
-    copyBtn.innerHTML = copyIcon() + ' Copy letter';
-    copyBtn.onclick = () => {
-      navigator.clipboard.writeText(letterBody).then(() => {
-        copyBtn.textContent = '✓ Copied';
-        copyBtn.classList.add('copied');
-        setTimeout(() => { copyBtn.innerHTML = copyIcon() + ' Copy letter'; copyBtn.classList.remove('copied'); }, 2000);
-      });
-    };
-    div.appendChild(copyBtn);
-
-    if (policyMatch) {
-      const pEl = document.createElement('div');
-      pEl.className = 'policy-line';
-      const urlM = policyMatch[0].match(/https?:\/\/[^\s]+/);
-      if (urlM) {
-        const before = policyMatch[0].replace(urlM[0], '').replace('Policy basis:', '').trim();
-        pEl.innerHTML = `Policy basis: ${before ? escHtml(before) + ' — ' : ''}<a href="${urlM[0]}" target="_blank" rel="noopener">${urlM[0]}</a>`;
-      } else {
-        pEl.textContent = policyMatch[0];
-      }
-      div.appendChild(pEl);
-    }
-
-  } else {
-    const body = document.createElement('div');
-    body.className = 'message-body';
-    // Linkify CMS URLs
-    const urlRx = /(https?:\/\/www\.cms\.gov\/[^\s\n]+)/g;
-    const parts = content.split(urlRx);
-    parts.forEach(part => {
-      if (urlRx.test(part)) {
-        const a = document.createElement('a');
-        a.href = part; a.target = '_blank'; a.rel = 'noopener';
-        a.textContent = part; a.style.color = 'var(--sage)';
-        body.appendChild(a);
-      } else {
-        body.appendChild(document.createTextNode(part));
-      }
-      urlRx.lastIndex = 0;
-    });
-    div.appendChild(body);
-  }
-
-  return div;
-}
-
-function showTyping() {
-  const div = document.createElement('div');
-  div.className = 'message assistant';
-  div.id = 'typing-indicator';
-  const rl = document.createElement('div');
-  rl.className = 'message-role';
-  rl.textContent = 'Ma · MAST Provider';
-  div.appendChild(rl);
-  const t = document.createElement('div');
-  t.className = 'typing';
-  t.innerHTML = '<span></span><span></span><span></span>';
-  div.appendChild(t);
-  return div;
-}
-
-// ══════════════════════════════
-// UTILS
-// ══════════════════════════════
-function scrollToBottom() {
-  const c = document.getElementById('conversation');
-  setTimeout(() => c.scrollTop = c.scrollHeight, 50);
-}
-
-function escHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-function formatDate(iso) {
-  if (!iso) return '';
-  const d = new Date(iso);
-  const now = new Date();
-  const diff = now - d;
-  if (diff < 86400000) return d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-  if (diff < 604800000) return d.toLocaleDateString([], {weekday:'short'});
-  return d.toLocaleDateString([], {month:'short',day:'numeric'});
-}
-
-function copyIcon() {
-  return `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>`;
-}
+  document.getElementById('gateSubmit').addEventListener('click', function(e) {
+    e.preventDefault();
+    this.textContent = 'Request Received —';
+    this.style.background = 'rgba(240,237,232,0.15)';
+    this.style.color = 'rgba(240,237,232,0.5)';
+    setTimeout(() => {
+      this.textContent = 'Request Information';
+      this.style.background = '';
+      this.style.color = '';
+    }, 3000);
+  });
 </script>
 </body>
 </html>
